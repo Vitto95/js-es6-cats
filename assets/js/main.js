@@ -60,23 +60,48 @@ Tramite la funzione .forEach(), stampare in pagina tutti i gattini, ciascuno con
   //Array di oggetti contenenti solo i gatti femmina
   let femaleCats = cats.filter((cat) => {
     //aggiungo il fiocco rosa, con opacità diversa in base all'età
-    cat.age > 10
-      ? (cat.ribbon = { color: "#ff66cc", opacity: 0.8 })
-      : (cat.ribbon = { color: "#ff66cc", opacity: 0.3 });
+    /*  cat.age > 10
+      ? (cat.ribbon = { color: "PINK", opacity: 0.5 })
+      : (cat.ribbon = { color: "PINK", opacity: 0.2 }); */
     return cat.gender === "female";
   });
 
-  console.log("Array con gatti femmina: ", femaleCats);
+  console.log("Array con gatti femmina senza ribbon: ", femaleCats);
+
+  //Aggiunta oggetto "ribbon"
+  femaleCats.forEach((cat) => {
+    if (cat.age > 10) {
+      cat.ribbon = { color: PINK, opacity: 0.5 };
+    } else {
+      cat.ribbon = { color: PINK, opacity: 0 };
+    }
+  });
+
+  console.log("Array con gatti femmina, con aggiunto ribbon: ", femaleCats);
 
   //Array di oggetti contenenti solo i gatti maschi
   let maleCats = cats.filter((cat) => {
-    cat.age > 10
-      ? (cat.ribbon = { color: BLUE, opacity: 0.8 })
-      : (cat.ribbon = { color: BLUE, opacity: 0.3 });
+    /*  cat.age > 10
+      ? (cat.ribbon = { color: "BLUE", opacity: 0.8 })
+      : (cat.ribbon = { color: "BLUE", opacity: 0.3 }); */
     return cat.gender === "male";
   });
 
-  console.log("Array con gatti maschi: ", maleCats);
+  console.log("Array con gatti maschi senza ribbon: ", maleCats);
+
+  //Aggiunta oggetto "ribbon"
+  maleCats.forEach((cat) => {
+    if (cat.age > 10) {
+      cat.ribbon = { color: BLUE, opacity: 0.8 };
+    } else {
+      cat.ribbon = { color: BLUE, opacity: 0.3 };
+    }
+  });
+
+  console.log("Array con gatti maschi, con aggiunto ribbon: ", maleCats);
+
+  /* Milestone 3: Creare un nuovo array con prima tutti i gattini femmina e poi tutti i gattini maschio, inserendo solamente nome e colore e colore e opacità del fiocco per ogni gatto. */
+
   //Concatenazione degli array
   let allCats = [...femaleCats, ...maleCats];
 
@@ -87,11 +112,22 @@ Tramite la funzione .forEach(), stampare in pagina tutti i gattini, ciascuno con
     //destrutturazione array 'allCats'
     const { name, color, ribbon } = cat;
     console.log("Nome: ", name, "Colore: ", color, "Fiocco: ", ribbon);
+    return {
+      name,
+      color,
+      ribbon,
+    };
   });
 
   console.log("Array con tutti i gatti, filtrato: ", newCats);
 
-  //Aggiunta fiocco rosa o blu
+  //Output newCats
+
+  newCats.forEach((cat) => {
+    $("#new-cats").append(
+      getTemplateList(cat.name, cat.color, cat.ribbon.color, cat.ribbon.opacity)
+    );
+  });
 }); //fine document ready
 
 //Blocco funzioni
@@ -101,12 +137,16 @@ function getTemplateList(name, color, ...args) {
   let listItem = "";
   let catAw = `<i class="fas fa-cat" style="color: ${color}"></i>`;
   let catName = `<span>${name}</span>`;
-  let maleAw = `<li><i class="fas fa-mars"></i></li>`;
-  let femaleAw = `<li><i class="fas fa-venus"></i></li>`;
+  let maleAw = `<i class="fas fa-mars" style="color: ${args[0]}; opacity:${args[1]}; "></i>`;
+  let femaleAw = `<i class="fas fa-venus style="color: ${args[0]}; opacity:${args[1]};"></i>`;
   //List Item base
   listItem = `<li>` + catAw + catName + `</li>`;
   if (args.length > 0) {
-    listItem += args[0] + args[1];
+    if (args[0] === "#003366") {
+      listItem = `<li>` + catAw + catName + maleAw + `</li>`;
+    } else {
+      listItem = `<li>` + catAw + catName + femaleAw + `</li>`;
+    }
   }
   return listItem;
 }
